@@ -9,7 +9,7 @@ Es una aplicación que muestra una lista de productos obtenidos de una API fake 
 2. Clona este repositorio:
 
    ```
-   git clone https://github.com/ju-lienz/flutter-mobile-developer-challenge.git
+   git clone https://github.com/ju-lienz/flutter-mobile-challenge.git
    ```
 
 3. Navega al directorio del proyecto
