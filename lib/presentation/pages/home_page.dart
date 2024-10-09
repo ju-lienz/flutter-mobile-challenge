@@ -14,41 +14,43 @@ class HomePage extends StatelessWidget {
       appBar: const CustomAppbarWidget(),
       body: BlocBuilder<ProductBloc, ProductState>(
         builder: (context, state) {
-          if (state is ProductInitial) {
-            context.read<ProductBloc>().add(FetchProducts());
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is ProductLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is ProductLoaded) {
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 0.7,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
+          switch (state) {
+            case ProductInitial():
+              context.read<ProductBloc>().add(FetchProducts());
+              return const Center(child: CircularProgressIndicator());
+            case ProductLoading():
+              return const Center(child: CircularProgressIndicator());
+            case ProductLoaded():
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 0.7,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                  ),
+                  itemCount: state.products.length,
+                  itemBuilder: (context, index) {
+                    final product = state.products[index];
+                    return ProductCardWidget(
+                      product: product,
+                      onTap: () =>
+                          context.go('/product/${product.id}', extra: product),
+                    );
+                  },
                 ),
-                itemCount: state.products.length,
-                itemBuilder: (context, index) {
-                  final product = state.products[index];
-                  return ProductCardWidget(
-                    product: product,
-                    onTap: () =>
-                        context.go('/product/${product.id}', extra: product),
-                  );
-                },
-              ),
-            );
-          } else if (state is ProductError) {
-            return Center(
-              child: Text(
-                "Error: ${state.message}",
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
-              ),
-            );
+              );
+            case ProductError():
+              return Center(
+                child: Text(
+                  "Error: ${state.message}",
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                ),
+              );
+            default:
+              return Container();
           }
-          return Container();
         },
       ),
     );
